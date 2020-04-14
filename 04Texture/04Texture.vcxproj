@@ -18,6 +18,28 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BasicShader.cpp" />
+    <ClCompile Include="DisplayManager.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RawModel.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BasicShader.h" />
+    <ClInclude Include="DisplayManager.h" />
+    <ClInclude Include="Error.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="RawModel.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TexturedModel.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{54EF2C46-A3A1-491F-88D1-447A0FB56D10}</ProjectGuid>
@@ -139,28 +161,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="BasicShader.cpp" />
-    <ClCompile Include="DisplayManager.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="Loader.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="RawModel.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BasicShader.h" />
-    <ClInclude Include="DisplayManager.h" />
-    <ClInclude Include="Error.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="Loader.h" />
-    <ClInclude Include="RawModel.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TexturedModel.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

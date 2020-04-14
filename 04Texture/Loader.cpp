@@ -1,44 +1,17 @@
-#include "Loader.h"
 #include <iostream>
+#include "Loader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
-Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> textures)
+Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> texCoords)
 {
 	GLuint vaoID = createVAO();
-	int indiceSize = indices.size();
-	bindIndicesBuffers(indices.data(), indiceSize);
-	storeDataInAttributeList(0, 3, vertices.data(), vertices.size() * sizeof(float));
-	storeDataInAttributeList(1, 2, &textures[0], textures.size() * sizeof(float));
+	int indicesSize = indices.size();
+	bindIndicesBuffers(indices.data(), indicesSize);
+	storeDataInAttributeList(0, 3, &vertices[0], vertices.size() * sizeof(float));
+	storeDataInAttributeList(1, 2, texCoords.data(), texCoords.size() * sizeof(float));
 	unBindVAO();
 	return Model(vaoID, vertices.size());
-}
-
-GLuint Loader::loadTexture(const std::string& fileName, bool repeat)
-{
-	GLuint texture;
-	int width, height, numComponents;
-	// º”‘ÿÕº∆¨
-	unsigned char* imageData = stbi_load(("res/textures/" + fileName).c_str(), &width, &height, &numComponents, 0);
-	std::cout << "width: " << width << " height: " << height << " numComponents " << numComponents << std::endl;
-	if (imageData == NULL)
-	{
-		std::cerr << "ERROR: texture loading failed for " << fileName.c_str() << std::endl;
-	}
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	if (!repeat)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	}
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	
-	m_textures.push_back(texture);
-	stbi_image_free(imageData);
-
-	return texture;
 }
 
 void Loader::cleanUp()
@@ -81,7 +54,7 @@ void Loader::storeDataInAttributeList(GLuint attribNumber, int attribSize, float
 	glVertexAttribPointer(attribNumber, attribSize, GL_FLOAT, GL_FALSE, 0, (void*)0);
 }
 
-void Loader::bindIndicesBuffers(int* indices, int& count)
+void Loader::bindIndicesBuffers(int* indices, int count)
 {
 	GLuint vboID;
 	glGenBuffers(1, &vboID);
@@ -89,6 +62,35 @@ void Loader::bindIndicesBuffers(int* indices, int& count)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * count, indices, GL_STATIC_DRAW);
 }
+
+GLuint Loader::loadTexture(const std::string& fileName, bool repeat)
+{
+	GLuint textureID;
+	int width, height, numComponents;
+	unsigned char* imageData = stbi_load(("res/texture/" + fileName).c_str(), &width, &height, &numComponents, 0);
+	std::cout << "width: " << width << " height: " << height << " components: " << numComponents << std::endl;
+	if (imageData == NULL)
+	{
+		std::cerr << "ERROR: texture loading failed for " << fileName << std::endl;
+	}
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	if (!repeat)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	
+	m_textures.push_back(textureID);
+	stbi_image_free(imageData);
+	return textureID;
+}
+
+
 
 void Loader::unBindVAO()
 {

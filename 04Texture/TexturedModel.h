@@ -1,16 +1,16 @@
 #pragma once
+#include "glad/glad.h"
 #include "RawModel.h"
 #include "Texture.h"
 
 class TexturedModel
 {
 public:
-	TexturedModel(Model model, Texture texture):
-		m_rawModel(model), m_modelTexture(texture)
-	{}
-	Model getRawModel() const { return m_rawModel; }
-	Texture getTexture() const { return m_modelTexture; }
+	TexturedModel(Model model, Texture texture)
+		:m_texture(texture), m_model(model){}
+	Texture getTexture() const { return m_texture; }
+	Model getModel() const { return m_model; }
 private:
-	Model m_rawModel;
-	Texture m_modelTexture;
+	Texture m_texture;
+	Model m_model;
 };

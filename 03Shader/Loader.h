@@ -7,7 +7,7 @@
 class Loader
 {
 public:
-	Model loadToVAO(std::vector<float> vertices);
+	Model loadToVAO(std::vector<float> vertices, std::vector<int> indices);
 	void cleanUp();
 private:
 	std::vector<GLuint> m_vaos;
@@ -15,6 +15,7 @@ private:
 
 	GLuint createVAO();
 	void storeDataInAttributeList(GLuint attribNumber, int attribSize, float* data, int dataSize);
+	void bindIndicesBuffers(int* indices, int count);
 	void unBindVAO();
 };
 

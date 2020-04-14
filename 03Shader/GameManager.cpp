@@ -36,14 +36,20 @@ GameManager::~GameManager()
 
 void GameManager::loop()
 {
-	float vertArray[] = {
-		-0.5f, -0.5f, 0.0f, // left  
-		0.5f, -0.5f, 0.0f, // right 
-		0.0f,  0.5f, 0.0f  // top   
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,	// left down
+		0.5f, -0.5f, 0.0f,	// right down
+		-0.5f,  0.5f, 0.0f,	// left top  
+		0.5f, 0.5f, 0.0f	// right top
+	};
+	int indices[] = {
+		0, 1, 2,
+		2, 3, 1
 	};
 	Loader loader;
-	std::vector<float> vertices(vertArray, vertArray + sizeof(vertArray) / sizeof(float));
-	Model model = loader.loadToVAO(vertices);
+	std::vector<float> vertices_vec(vertices, vertices + sizeof(vertices) / sizeof(float));
+	std::vector<int> indices_vec(indices, indices + sizeof(indices) / sizeof(int));
+	Model model = loader.loadToVAO(vertices_vec, indices_vec);
 	std::cout << model.getVertexCount() << std::endl;
 	std::cout << "Game Loop is running now" << std::endl;
 	Renderer render;

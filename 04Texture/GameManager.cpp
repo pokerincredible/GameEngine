@@ -1,9 +1,9 @@
 #include <iostream>
 #include "GameManager.h"
 #include "Loader.h"
-#include "RawModel.h"
 #include "Renderer.h"
 #include "BasicShader.h"
+#include "TexturedModel.h"
 
 GameManager::GameManager()
 {
@@ -42,27 +42,28 @@ void GameManager::loop()
 		-0.5f,  0.5f, 0.0f,	// left top  
 		0.5f, 0.5f, 0.0f	// right top
 	};
-	float indices[] = {
+	int indices[] = {
 		0, 1, 2,
 		2, 3, 1
 	};
-	float textureCoords[] = {
+	float texCoords[] = {
 		0,0,
 		1,0,
 		0,1,
 		1,1
 	};
 	Loader loader;
-	//------------float array to vector<float>------------//
-	std::vector<float> vertex_vec(vertices, vertices + sizeof(vertices) / sizeof(float));
+	std::vector<float> vertices_vec(vertices, vertices + sizeof(vertices) / sizeof(float));
 	std::vector<int> indices_vec(indices, indices + sizeof(indices) / sizeof(int));
-	std::vector<float> texCoords_vec(textureCoords, textureCoords + sizeof(textureCoords) / sizeof(float));
-	
+	std::vector<float> texCoords_vec(texCoords, texCoords + sizeof(texCoords) / sizeof(float));
+
+	Model model = loader.loadToVAO(vertices_vec, indices_vec, texCoords_vec);
 	GLuint textureID = loader.loadTexture("pic.png", false);
 	Texture texture(textureID);
-	Model model = loader.loadToVAO(vertex_vec, indices_vec, texCoords_vec);
 	TexturedModel texturedModel(model, texture);
 
+	std::cout << model.getVertexCount() << std::endl;
+	std::cout << "Game Loop is running now" << std::endl;
 	Renderer render;
 	BasicShader shader;
 	// äÖÈ¾Ñ­»·

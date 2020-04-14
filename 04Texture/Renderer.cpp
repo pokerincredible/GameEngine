@@ -8,8 +8,7 @@ void Renderer::prepare()
 
 void Renderer::Render(TexturedModel texturedModel)
 {
-	Model model = texturedModel.getRawModel();
-	glBindVertexArray(model.getVaoID());
+	glBindVertexArray(texturedModel.getModel().getVaoID());
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);

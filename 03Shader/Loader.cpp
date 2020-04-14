@@ -1,8 +1,10 @@
 #include "Loader.h"
 
-Model Loader::loadToVAO(std::vector<float> vertices)
+Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices)
 {
 	GLuint vaoID = createVAO();
+	int indicesSize = indices.size();
+	bindIndicesBuffers(indices.data(), indicesSize);
 	storeDataInAttributeList(0, 3, &vertices[0], vertices.size() * sizeof(float));
 	unBindVAO();
 	return Model(vaoID, vertices.size());
@@ -40,6 +42,15 @@ void Loader::storeDataInAttributeList(GLuint attribNumber, int attribSize, float
 	glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
 	// 顶点属性index, 属性大小，类型，GL_FALSE, 步长，(void*)0
 	glVertexAttribPointer(attribNumber, attribSize, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+}
+
+void Loader::bindIndicesBuffers(int* indices, int count)
+{
+	GLuint vboID;
+	glGenBuffers(1, &vboID);
+	m_vbos.push_back(vboID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * count, indices, GL_STATIC_DRAW);
 }
 
 void Loader::unBindVAO()

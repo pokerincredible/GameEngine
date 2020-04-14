@@ -1,7 +1,7 @@
 #include "BasicShader.h"
 
 BasicShader::BasicShader() : 
-	ShaderProgram("res/shaders/vertShader.vert", "res/shaders/fragShader.frag")
+	ShaderProgram("res/shader/vertShader.vert", "res/shader/fragShader.frag")
 {
 	bindAttributes();
 }
@@ -9,5 +9,4 @@ BasicShader::BasicShader() :
 void BasicShader::bindAttributes()
 {
 	bindAttribute(0, "position");
-	bindAttribute(1, "textureCoords");
 }
