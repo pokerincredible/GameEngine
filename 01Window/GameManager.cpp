@@ -6,7 +6,7 @@ GameManager::GameManager()
 	{
 		std::cout << "GLFW initialized successfully" << std::endl;
 		// 创建一个 displayManager
-		m_displayManager = new DisplayManager(1280, 720, "GameEngine");
+		m_displayManager.reset(new DisplayManager(1280, 720, "GameEngine"));
 		// 初始化 glad
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
@@ -25,7 +25,6 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
-	delete m_displayManager;
 	glfwTerminate();
 }
 

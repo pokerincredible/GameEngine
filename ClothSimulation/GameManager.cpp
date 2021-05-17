@@ -1,23 +1,9 @@
 #include <iostream>
 #include "GameManager.h"
 #include "Loader.h"
-#include "RawModel.h"
 #include "Renderer.h"
 #include "BasicShader.h"
-#include "Camera.h"
-#include "Mesh.h"
-
-// System parameters
-namespace SystemParam {
-	static const int n = 33;					// must be odd, n * n = n_vertices | 61
-	static const float w = 2.0f;				// width | 2.0f
-	static const float h = 0.008f;				// time step, smaller for better results | 0.008f = 0.016f/2
-	static const float r = w / (n - 1) * 1.05f; // spring rest legnth
-	static const float k = 1.0f;				// spring stiffness | 1.0f;
-	static const float m = 0.25f / (n * n);		// point mass | 0.25f
-	static const float a = 0.993f;				// damping, close to 1.0 | 0.993f
-	static const float g = 9.8f * m;			// gravitational force | 9.8f
-}
+#include "TexturedModel.h"
 
 GameManager::GameManager()
 {
@@ -25,7 +11,7 @@ GameManager::GameManager()
 	{
 		std::cout << "GLFW initialized successfully" << std::endl;
 		// 创建一个 displayManager
-		m_displayManager = new DisplayManager(1280, 720, "GameEngine");
+		m_displayManager = new DisplayManager(800, 720, "simulation");
 		// 初始化 glad
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
@@ -48,51 +34,46 @@ GameManager::~GameManager()
 	glfwTerminate();
 }
 
-void GameManager::initCloth() {
-	const int n = SystemParam::n;
-	const float w = SystemParam::w;
-	// generate mesh
-	MeshBuilder meshBuilder;
-	meshBuilder.uniformGrid(w, n);
-	m_clothMesh = meshBuilder.getResult();
-
-}
-
 void GameManager::loop()
 {
-	std::cout << "Game Loop is running now" << std::endl;
-	
-	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,	// left down
-		0.5f, -0.5f, 0.0f,	// right down
-		-0.5f,  0.5f, 0.0f,	// left top  
-		0.5f, 0.5f, 0.0f	// right top
-	};
-	int indices[] = {
-		0, 1, 2,
-		2, 3, 1
-	};
-	
-	Loader loader;
-	initCloth();
-	std::vector<float> vertices_vec(vertices, vertices + sizeof(vertices) / sizeof(float));
-	std::vector<int> indices_vec(indices, indices + sizeof(indices) / sizeof(int));
+	Mesh clothMesh;
+	clothMesh.initClothMesh(4, 4, 2, 2);
 
-	RawModel rawModel = loader.loadToVAO(vertices_vec, indices_vec);
-	std::cout << rawModel.getVertexCount() << std::endl;
+	for (int i = 0; i < clothMesh.m_vertices.size(); i++) {
+		std::cout << clothMesh.m_vertices[i].Position[0] << " " << clothMesh.m_vertices[i].Position[1] << " " << clothMesh.m_vertices[i].Position[2] << std::endl;
+		//std::cout << clothMesh.m_vertices[i].Normal[0] << " " << clothMesh.m_vertices[i].Normal[1] << " " << clothMesh.m_vertices[i].Normal[2] << std::endl;
+		//std::cout << clothMesh.m_vertices[i].TexCoord[0] << " " << clothMesh.m_vertices[i].TexCoord[1] << std::endl;
+	}
+
+	for (int i = 0; i < clothMesh.m_indices.size(); i = i + 6) {
+		std::cout << clothMesh.m_indices[i] << " ";
+		std::cout << clothMesh.m_indices[i+1] << " ";
+		std::cout << clothMesh.m_indices[i+2] << " ";
+		std::cout << clothMesh.m_indices[i+3] << " ";
+		std::cout << clothMesh.m_indices[i+4] << " ";
+		std::cout << clothMesh.m_indices[i+5] << " ";
+		std::cout << std::endl;
+	}
+
+	Loader loader;
+	Model model = loader.loadToVAO(clothMesh.m_vertices, clothMesh.m_indices);
+	GLuint textureID = loader.loadTexture("pic.png", false);
+	Texture texture(textureID);
+	TexturedModel texturedModel(model, texture);
+
+	std::cout << model.getVertexCount() << std::endl;
+	std::cout << "Game Loop is running now" << std::endl;
 	Renderer render;
 	BasicShader shader;
-	Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-
 	// 渲染循环
 	while (m_displayManager->isWindowOpen())
 	{
 		render.prepare();
 		shader.use();
-		render.Render(rawModel);
+		render.Render(texturedModel);
 		shader.unUse();
+		// updateDisplay 中不能加入 prepare 逻辑
 		m_displayManager->updateDisplay();
 	}
-	// delete vao, vbo 等 buffer
 	loader.cleanUp();
 }

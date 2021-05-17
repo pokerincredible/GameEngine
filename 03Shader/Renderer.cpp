@@ -6,7 +6,7 @@ void Renderer::prepare()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::Render(Model model)
+void Renderer::Render(Mesh model)
 {
 	glBindVertexArray(model.getVaoID());
 	glEnableVertexAttribArray(0);

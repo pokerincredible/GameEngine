@@ -1,16 +1,16 @@
 #include "RawModel.h"
 
-Model::Model(GLuint vaoID, int vertexCount):
+Mesh::Mesh(GLuint vaoID, int vertexCount):
 	m_vaoID(vaoID), m_vertexCount(vertexCount)
 {
 }
 
-GLuint Model::getVaoID() const
+GLuint Mesh::getVaoID() const
 {
 	return m_vaoID;
 }
 
-int Model::getVertexCount() const
+int Mesh::getVertexCount() const
 {
 	return m_vertexCount;
 }

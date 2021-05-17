@@ -11,7 +11,7 @@ GameManager::GameManager()
 	{
 		std::cout << "GLFW initialized successfully" << std::endl;
 		// 创建一个 displayManager
-		m_displayManager = new DisplayManager(1280, 720, "GameEngine");
+		m_displayManager.reset(new DisplayManager(1280, 720, "GameEngine"));
 		// 初始化 glad
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
@@ -30,7 +30,6 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
-	delete m_displayManager;
 	glfwTerminate();
 }
 
@@ -49,7 +48,7 @@ void GameManager::loop()
 	Loader loader;
 	std::vector<float> vertices_vec(vertices, vertices + sizeof(vertices) / sizeof(float));
 	std::vector<int> indices_vec(indices, indices + sizeof(indices) / sizeof(int));
-	Model model = loader.loadToVAO(vertices_vec, indices_vec);
+	Mesh model = loader.loadToVAO(vertices_vec, indices_vec);
 	std::cout << model.getVertexCount() << std::endl;
 	std::cout << "Game Loop is running now" << std::endl;
 	Renderer render;

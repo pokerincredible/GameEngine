@@ -1,6 +1,51 @@
 #include "ShaderProgram.h"
 #include "Error.h"
 
+ShaderProgram::ShaderProgram(const std::string& vertShaderPath, const std::string& fragShaderPath)
+{
+	m_vertexShaderID = loadShader(vertShaderPath, GL_VERTEX_SHADER);
+	m_fragmentShaderID = loadShader(fragShaderPath, GL_FRAGMENT_SHADER);
+	m_programID = glCreateProgram();
+	glAttachShader(m_programID, m_vertexShaderID);
+	glAttachShader(m_programID, m_fragmentShaderID);
+	glLinkProgram(m_programID);
+	glValidateProgram(m_programID);
+
+	// ¼ì²é±àÒë×´Ì¬
+	GLint status;
+	glGetProgramiv(m_programID, GL_VALIDATE_STATUS, &status);
+	if (status == GL_FALSE)
+	{
+		GLint infoLength;
+		glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &infoLength);
+		GLchar* infoLog = new GLchar[infoLength];
+		glGetProgramInfoLog(m_programID, infoLength, NULL, infoLog);
+		std::cout << "ERROR: could not validate shader program" << std::endl;
+		std::cout << infoLog << std::endl;
+		delete[] infoLog;
+	}
+}
+
+ShaderProgram::~ShaderProgram()
+{
+	unUse();
+	glDetachShader(m_programID, m_vertexShaderID);
+	glDetachShader(m_programID, m_fragmentShaderID);
+	glDeleteShader(m_vertexShaderID);
+	glDeleteShader(m_fragmentShaderID);
+	glDeleteProgram(m_programID);
+}
+
+void ShaderProgram::use()
+{
+	glUseProgram(m_programID);
+}
+
+void ShaderProgram::unUse()
+{
+	glUseProgram(0);
+}
+
 GLuint ShaderProgram::loadShader(const std::string& fileName, GLenum type)
 {
 	std::string shaderCode;
@@ -36,51 +81,6 @@ GLuint ShaderProgram::loadShader(const std::string& fileName, GLenum type)
 		delete[] infoLog;
 	}
 	return shaderID;
-}
-
-ShaderProgram::ShaderProgram(const std::string& vertShaderPath, const std::string& fragShaderPath)
-{
-	m_vertexShaderID = loadShader(vertShaderPath, GL_VERTEX_SHADER);
-	m_fragmentShaderID = loadShader(fragShaderPath, GL_FRAGMENT_SHADER);
-	m_programID = glCreateProgram();
-	glAttachShader(m_programID, m_vertexShaderID);
-	glAttachShader(m_programID, m_fragmentShaderID);
-	glLinkProgram(m_programID);
-	glValidateProgram(m_programID);
-
-	// ¼ì²é±àÒë×´Ì¬
-	GLint status;
-	glGetProgramiv(m_programID, GL_VALIDATE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLength;
-		glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &infoLength);
-		GLchar* infoLog = new GLchar[infoLength];
-		glGetProgramInfoLog(m_programID, infoLength, NULL, infoLog);
-		std::cout << "ERROR: could not validate shader program" << std::endl;
-		std::cout << infoLog << std::endl;
-		delete[] infoLog;
-	}
-}
-
-void ShaderProgram::use()
-{
-	glUseProgram(m_programID);
-}
-
-void ShaderProgram::unUse()
-{
-	glUseProgram(0);
-}
-
-ShaderProgram::~ShaderProgram()
-{
-	unUse();
-	glDetachShader(m_programID, m_vertexShaderID);
-	glDetachShader(m_programID, m_fragmentShaderID);
-	glDeleteShader(m_vertexShaderID);
-	glDeleteShader(m_fragmentShaderID);
-	glDeleteProgram(m_programID);
 }
 
 void ShaderProgram::bindAttribute(int attribute, const std::string& varName)
@@ -119,4 +119,3 @@ void ShaderProgram::setVec4(const std::string& name, glm::vec4 value) const
 {
 	glUniform4f(glGetUniformLocation(m_programID, name.c_str()), value.x, value.y, value.z, value.w);
 }
-

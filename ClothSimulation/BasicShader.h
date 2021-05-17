@@ -1,6 +1,7 @@
 #pragma once
 #include "ShaderProgram.h"
-class BasicShader : public ShaderProgram 
+class BasicShader :
+	public ShaderProgram
 {
 public:
 	BasicShader();

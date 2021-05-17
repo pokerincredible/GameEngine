@@ -5,7 +5,7 @@ DisplayManager::DisplayManager(int width, int height, const std::string& title)
 {
 	// 初始化 GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	// 创建一个窗口对象
 	m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);

@@ -4,6 +4,6 @@ class Renderer
 {
 public:
 	void prepare();
-	void Render(Model model);
+	void Render(Mesh model);
 };
 

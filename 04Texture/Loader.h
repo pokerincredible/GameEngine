@@ -8,7 +8,7 @@
 class Loader
 {
 public:
-	Model loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> texCoords);
+	Mesh loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> texCoords);
 	GLuint loadTexture(const std::string& fileName, bool repeat = false);
 	void cleanUp();
 private:

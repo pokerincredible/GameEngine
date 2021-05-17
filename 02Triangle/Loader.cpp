@@ -1,11 +1,11 @@
 #include "Loader.h"
 
-Model Loader::loadToVAO(std::vector<float> vertices)
+Mesh Loader::loadToVAO(std::vector<float> vertices)
 {
 	GLuint vaoID = createVAO();
 	storeDataInAttributeList(0, 3, &vertices[0], vertices.size() * sizeof(float));
 	unBindVAO();
-	return Model(vaoID, vertices.size());
+	return Mesh(vaoID, vertices.size());
 }
 
 void Loader::cleanUp()

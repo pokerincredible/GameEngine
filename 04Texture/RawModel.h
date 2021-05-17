@@ -4,10 +4,10 @@
 	用来描述模型（模型角度）
 	模型关联的 vaoID, 以及模型数据
 */
-class Model
+class Mesh
 {
 public:
-	Model(GLuint vaoID, int vertexCount);
+	Mesh(GLuint vaoID, int vertexCount);
 	GLuint getVaoID() const;
 	int getVertexCount() const;
 private:

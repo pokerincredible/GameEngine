@@ -6,11 +6,11 @@
 class TexturedModel
 {
 public:
-	TexturedModel(Model model, Texture texture)
+	TexturedModel(Mesh model, Texture texture)
 		:m_texture(texture), m_model(model){}
 	Texture getTexture() const { return m_texture; }
-	Model getModel() const { return m_model; }
+	Mesh getModel() const { return m_model; }
 private:
 	Texture m_texture;
-	Model m_model;
+	Mesh m_model;
 };

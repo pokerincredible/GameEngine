@@ -7,7 +7,7 @@
 class Loader
 {
 public:
-	Model loadToVAO(std::vector<float> vertices, std::vector<int> indices);
+	Mesh loadToVAO(std::vector<float> vertices, std::vector<int> indices);
 	void cleanUp();
 private:
 	std::vector<GLuint> m_vaos;

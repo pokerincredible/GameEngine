@@ -1,13 +1,13 @@
 #include "Loader.h"
 
-Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices)
+Mesh Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices)
 {
 	GLuint vaoID = createVAO();
 	int indicesSize = indices.size();
 	bindIndicesBuffers(indices.data(), indicesSize);
 	storeDataInAttributeList(0, 3, &vertices[0], vertices.size() * sizeof(float));
 	unBindVAO();
-	return Model(vaoID, vertices.size());
+	return Mesh(vaoID, vertices.size());
 }
 
 void Loader::cleanUp()

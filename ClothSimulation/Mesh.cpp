@@ -1,73 +1,76 @@
 #include "Mesh.h"
 
-float* Mesh::vbuffer() { return VERTEX_DATA(this); }
-float* Mesh::nbuffer() { return NORMAL_DATA(this); }
-float* Mesh::tbuffer() { return TEXTURE_DATA(this); }
-unsigned int* Mesh::ibuffer() { return &_ibuff[0]; }
-void Mesh::useIBuff(std::vector<unsigned int>& _ibuff) { this->_ibuff = _ibuff; }
+Vertex::Vertex() {
+	Position = glm::vec3(0, 0, 0);
+	Normal = glm::vec3(0, 0, 0);
+	TexCoord = glm::vec2(0, 0);
+}
 
-unsigned int Mesh::vbufferLen() { return (unsigned int)n_vertices() * 3; }
-unsigned int Mesh::nbufferLen() { return (unsigned int)n_vertices() * 3; }
-unsigned int Mesh::tbufferLen() { return (unsigned int)n_vertices() * 2; }
-unsigned int Mesh::ibufferLen() { return (unsigned int)_ibuff.size(); }
+void Mesh::initClothMesh(float width, float height, float wNum, float hNum)
+{
+	// resize vector size
+	m_vertices.resize((wNum  + 1) * (hNum + 1));
+	m_indices.resize(6 * (wNum) * (hNum));
 
-void MeshBuilder::uniformGrid(float w, int n) {
-	result = new Mesh;
-	unsigned int ibuffLen = 6 * (n - 1) * (n - 1);
-	std::vector<unsigned int> ibuff(ibuffLen);
+	float d_w = width / wNum; 
+	float d_h = height / hNum;
+	float uv_w = 1.0f / wNum;
+	float uv_h = 1.0f / hNum;
+	glm::vec3 originPos = glm::vec3(-width / 2.0f, height / 2.0f, 0.0f);
 
-	// request mesh properties
-	result->request_vertex_normals();
-	result->request_vertex_normals();
-	result->request_vertex_texcoords2D();
+	glm::vec3 dx = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 dy = glm::vec3(0.0f, -1.0f, 0.0f);
 
-	// generate mesh
-	unsigned int idx = 0; // vertex index
-	const float d = w / (n - 1); // step distance
-	const float ud = 1.0f / (n - 1); // unit step distance
-	const OpenMesh::Vec3f o = OpenMesh::Vec3f(-w / 2.0f, w / 2.0f, 0.0f); // origin
-	const OpenMesh::Vec3f ux = OpenMesh::Vec3f(1.0f, 0.0f, 0.0f); // unit x direction
-	const OpenMesh::Vec3f uy = OpenMesh::Vec3f(0.0f, -1.0f, 0.0f); // unit y direction
-	std::vector<OpenMesh::VertexHandle> handle_table(n * n); // table storing vertex handles for easy grid connectivity establishment
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			handle_table[j + i * n] = result->add_vertex(o + d * j * ux + d * i * uy); // add vertex
-			result->set_texcoord2D(handle_table[j + i * n], OpenMesh::Vec2f(ud * j, ud * i)); // add texture coordinates
-
-			//add connectivity
-			if (i > 0 && j < n - 1) {
-				result->add_face(
-					handle_table[j + i * n],
-					handle_table[j + 1 + (i - 1) * n],
-					handle_table[j + (i - 1) * n]
-				);
-
-				ibuff[idx++] = j + i * n;
-				ibuff[idx++] = j + 1 + (i - 1) * n;
-				ibuff[idx++] = j + (i - 1) * n;
-			}
+	int idx = 0;
+	for (int i = 0; i <= hNum; i++) {
+		for (int j = 0; j <= wNum; j++) {
+			// positions
+			m_vertices[j + i * wNum].Position = originPos + dx * d_w * (float)j + dy * d_h * (float)i;
+			// texCoords
+			m_vertices[j + i * wNum].TexCoord = glm::vec2(uv_w * j, uv_h * i);
 
 			if (j > 0 && i > 0) {
-				result->add_face(
-					handle_table[j + i * n],
-					handle_table[j + (i - 1) * n],
-					handle_table[j - 1 + i * n]
-				);
-
-				ibuff[idx++] = j + i * n;
-				ibuff[idx++] = j + (i - 1) * n;
-				ibuff[idx++] = j - 1 + i * n;
+				m_indices[idx++] = j + i * width;
+				m_indices[idx++] = j - 1 + (i - 1) * width;
+				m_indices[idx++] = j + (i - 1) * width;
+				m_indices[idx++] = j-1 + (i-1) * width;
+				m_indices[idx++] = j + i * width;
+				m_indices[idx++] = j - 1 + i * width;
 			}
 		}
 	}
-
-	// calculate normals
-	result->request_face_normals();
-	result->update_normals();
-	result->release_face_normals();
-
-	// set index buffer
-	result->useIBuff(ibuff);
+	updateNormals();
 }
-Mesh* MeshBuilder::getResult() { return result; }
+
+void Mesh::updateNormals() {
+	for (int i = 0; i < m_vertices.size(); i++)
+		m_vertices[i].Normal = glm::vec3(0, 0, 0);
+	//for (size_t i = 0; i < m_indices.size(); i += 3) {
+	//	unsigned int vertId0 = m_indices[i];
+	//	unsigned int vertId1 = m_indices[i + 1];
+	//	unsigned int vertId2 = m_indices[i + 2];
+	//	glm::vec3 pVert0 = m_vertices[vertId0].Position;
+	//	glm::vec3 pVert1 = m_vertices[vertId1].Position;
+	//	glm::vec3 pVert2 = m_vertices[vertId2].Position;
+	//	glm::vec3 e10 = pVert1 - pVert0;
+	//	glm::vec3 e21 = pVert2 - pVert1;
+	//	glm::vec3 e02 = pVert0 - pVert2;
+
+	//	glm::vec3 faceNormal;
+	//	glm::vec3 v1 = e10;
+	//	glm::vec3 v2 = -e02;
+	//	
+	//	faceNormal[0] = v1[1] * v2[2] - v1[2] * v2[1];
+	//	faceNormal[1] = v1[2] * v2[0] - v1[0] * v2[2];
+	//	faceNormal[2] = v1[0] * v2[1] - v1[1] * v2[0];
+
+	//	//Eigen::Vector3f faceNormal = e10.cross(-e02);
+	//	faceNormal = glm::normalize(faceNormal);
+
+	//	m_vertices[vertId0].Normal += faceNormal;
+	//	m_vertices[vertId1].Normal += faceNormal;
+	//	m_vertices[vertId2].Normal += faceNormal;
+	//}
+	//for (int i = 0; i < m_vertices.size(); i++)
+	//	m_vertices[i].Normal = glm::normalize(m_vertices[i].Normal);
+}

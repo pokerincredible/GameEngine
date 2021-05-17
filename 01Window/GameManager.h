@@ -1,6 +1,7 @@
 #pragma once
 #include "glad/glad.h"
 #include "DisplayManager.h"
+#include <memory>
 class GameManager
 {
 public:
@@ -8,6 +9,6 @@ public:
 	~GameManager();
 	void loop();
 private:
-	DisplayManager* m_displayManager;
+	std::unique_ptr<DisplayManager> m_displayManager;
 };
 

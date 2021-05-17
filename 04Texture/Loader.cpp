@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
-Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> texCoords)
+Mesh Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices, std::vector<float> texCoords)
 {
 	GLuint vaoID = createVAO();
 	int indicesSize = indices.size();
@@ -11,7 +11,7 @@ Model Loader::loadToVAO(std::vector<float> vertices, std::vector<int> indices, s
 	storeDataInAttributeList(0, 3, &vertices[0], vertices.size() * sizeof(float));
 	storeDataInAttributeList(1, 2, texCoords.data(), texCoords.size() * sizeof(float));
 	unBindVAO();
-	return Model(vaoID, vertices.size());
+	return Mesh(vaoID, vertices.size());
 }
 
 void Loader::cleanUp()

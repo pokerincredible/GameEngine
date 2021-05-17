@@ -8,9 +8,7 @@ public:
 	GameManager();
 	~GameManager();
 	void loop();
-	void initCloth();
 private:
 	DisplayManager* m_displayManager;
-	Mesh* m_clothMesh;
 };
 

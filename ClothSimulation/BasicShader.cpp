@@ -1,6 +1,6 @@
 #include "BasicShader.h"
 
-BasicShader::BasicShader() :
+BasicShader::BasicShader() : 
 	ShaderProgram("res/shader/vertShader.vert", "res/shader/fragShader.frag")
 {
 	bindAttributes();

@@ -11,7 +11,7 @@ GameManager::GameManager()
 	{
 		std::cout << "GLFW initialized successfully" << std::endl;
 		// 创建一个 displayManager
-		m_displayManager = new DisplayManager(1280, 720, "GameEngine");
+		m_displayManager = new DisplayManager(800, 720, "GameEngine");
 		// 初始化 glad
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
@@ -57,7 +57,7 @@ void GameManager::loop()
 	std::vector<int> indices_vec(indices, indices + sizeof(indices) / sizeof(int));
 	std::vector<float> texCoords_vec(texCoords, texCoords + sizeof(texCoords) / sizeof(float));
 
-	Model model = loader.loadToVAO(vertices_vec, indices_vec, texCoords_vec);
+	Mesh model = loader.loadToVAO(vertices_vec, indices_vec, texCoords_vec);
 	GLuint textureID = loader.loadTexture("pic.png", false);
 	Texture texture(textureID);
 	TexturedModel texturedModel(model, texture);
