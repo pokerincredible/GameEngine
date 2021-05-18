@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include <iostream>
 
 Vertex::Vertex() {
 	Position = glm::vec3(0, 0, 0);
@@ -27,17 +28,19 @@ void Mesh::initClothMesh(float width, float height, float wNum, float hNum)
 			// positions
 			m_vertices[j + i * wNum].Position = originPos + dx * d_w * (float)j + dy * d_h * (float)i;
 			// texCoords
+			std::cout << j + i * wNum << "  u:" << uv_w * j << " v:" << uv_h * i << " ";
 			m_vertices[j + i * wNum].TexCoord = glm::vec2(uv_w * j, uv_h * i);
 
 			if (j > 0 && i > 0) {
-				m_indices[idx++] = j + i * width;
-				m_indices[idx++] = j - 1 + (i - 1) * width;
-				m_indices[idx++] = j + (i - 1) * width;
-				m_indices[idx++] = j-1 + (i-1) * width;
-				m_indices[idx++] = j + i * width;
-				m_indices[idx++] = j - 1 + i * width;
+				m_indices[idx++] = j + i * (wNum + 1);
+				m_indices[idx++] = j - 1 + (i - 1) * (wNum + 1);
+				m_indices[idx++] = j + (i - 1) * (wNum + 1);
+				m_indices[idx++] = j-1 + (i-1) * (wNum + 1);
+				m_indices[idx++] = j + i * (wNum + 1);
+				m_indices[idx++] = j - 1 + i * (wNum + 1);
 			}
 		}
+		std::cout << std::endl;
 	}
 	updateNormals();
 }

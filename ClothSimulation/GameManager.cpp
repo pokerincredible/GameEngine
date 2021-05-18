@@ -37,12 +37,12 @@ GameManager::~GameManager()
 void GameManager::loop()
 {
 	Mesh clothMesh;
-	clothMesh.initClothMesh(4, 4, 2, 2);
+	clothMesh.initClothMesh(2, 2, 2, 2);
 
 	for (int i = 0; i < clothMesh.m_vertices.size(); i++) {
-		std::cout << clothMesh.m_vertices[i].Position[0] << " " << clothMesh.m_vertices[i].Position[1] << " " << clothMesh.m_vertices[i].Position[2] << std::endl;
+		//std::cout << clothMesh.m_vertices[i].Position[0] << " " << clothMesh.m_vertices[i].Position[1] << " " << clothMesh.m_vertices[i].Position[2] << std::endl;
 		//std::cout << clothMesh.m_vertices[i].Normal[0] << " " << clothMesh.m_vertices[i].Normal[1] << " " << clothMesh.m_vertices[i].Normal[2] << std::endl;
-		//std::cout << clothMesh.m_vertices[i].TexCoord[0] << " " << clothMesh.m_vertices[i].TexCoord[1] << std::endl;
+		std::cout << clothMesh.m_vertices[i].TexCoord[0] << " " << clothMesh.m_vertices[i].TexCoord[1] << std::endl;
 	}
 
 	for (int i = 0; i < clothMesh.m_indices.size(); i = i + 6) {
