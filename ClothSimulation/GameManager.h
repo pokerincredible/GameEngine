@@ -11,4 +11,3 @@ public:
 private:
 	DisplayManager* m_displayManager;
 };
-

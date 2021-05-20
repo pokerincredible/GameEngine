@@ -10,9 +10,9 @@ GameManager::GameManager()
 	if (glfwInit())
 	{
 		std::cout << "GLFW initialized successfully" << std::endl;
-		// 创建一个 displayManager
+		// create a displayManager
 		m_displayManager = new DisplayManager(800, 720, "simulation");
-		// 初始化 glad
+		// init glad
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			std::cerr << "Failed to initialize GLAD" << std::endl;
@@ -37,23 +37,7 @@ GameManager::~GameManager()
 void GameManager::loop()
 {
 	Mesh clothMesh;
-	clothMesh.initClothMesh(2, 2, 2, 2);
-
-	for (int i = 0; i < clothMesh.m_vertices.size(); i++) {
-		//std::cout << clothMesh.m_vertices[i].Position[0] << " " << clothMesh.m_vertices[i].Position[1] << " " << clothMesh.m_vertices[i].Position[2] << std::endl;
-		//std::cout << clothMesh.m_vertices[i].Normal[0] << " " << clothMesh.m_vertices[i].Normal[1] << " " << clothMesh.m_vertices[i].Normal[2] << std::endl;
-		std::cout << clothMesh.m_vertices[i].TexCoord[0] << " " << clothMesh.m_vertices[i].TexCoord[1] << std::endl;
-	}
-
-	for (int i = 0; i < clothMesh.m_indices.size(); i = i + 6) {
-		std::cout << clothMesh.m_indices[i] << " ";
-		std::cout << clothMesh.m_indices[i+1] << " ";
-		std::cout << clothMesh.m_indices[i+2] << " ";
-		std::cout << clothMesh.m_indices[i+3] << " ";
-		std::cout << clothMesh.m_indices[i+4] << " ";
-		std::cout << clothMesh.m_indices[i+5] << " ";
-		std::cout << std::endl;
-	}
+	clothMesh.initClothMesh(1.6, 1.6, 10, 6);
 
 	Loader loader;
 	Model model = loader.loadToVAO(clothMesh.m_vertices, clothMesh.m_indices);
@@ -65,14 +49,14 @@ void GameManager::loop()
 	std::cout << "Game Loop is running now" << std::endl;
 	Renderer render;
 	BasicShader shader;
-	// 渲染循环
+	
+	// render loop
 	while (m_displayManager->isWindowOpen())
 	{
 		render.prepare();
 		shader.use();
 		render.Render(texturedModel);
 		shader.unUse();
-		// updateDisplay 中不能加入 prepare 逻辑
 		m_displayManager->updateDisplay();
 	}
 	loader.cleanUp();

@@ -9,6 +9,7 @@ void Renderer::prepare()
 
 void Renderer::Render(TexturedModel texturedModel)
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindVertexArray(texturedModel.getModel().getVaoID());
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
